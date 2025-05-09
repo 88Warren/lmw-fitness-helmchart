@@ -1,0 +1,60 @@
+namespace: lmw-fitness
+env: production
+allowedOrigin: https://www.lmwfitness.co.uk
+
+webserver:
+  port: 5052
+  type: NodePort
+  nodePort: 31333
+  host: www.lmwfitness.co.uk
+  path: /
+  pathType: Prefix
+  recaptcha: 6Ldn3-0qAAAAAMWv4iekZdMl4Xrfj2Av2zEL7onD
+  backendUrl: ""
+
+image:
+  repository: lmwcode/lmw_fitness_webserver
+  tag: v1.3.7
+  pullPolicy: Always
+
+replicaCount: 1
+
+api:
+  host: api.lmwfitness.co.uk
+  port: 8082
+  path: /api/
+  type: NodePort  
+  nodePort: 30260
+  pathType: Prefix
+
+database:
+  name: LMWfitness
+  user: postgres
+  port: 5432
+  type: ClusterIP
+  sslMode: disable
+
+storage:
+  storageClass: standard
+
+smtp:
+  host: smtp.ionos.co.uk
+  port: 587
+  username: info@lmwfitness.co.uk
+  from: info@lmwfitness.co.uk
+  to: info@lmwfitness.co.uk
+
+livenessProbe:
+  endpoint: /api/health/live
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  periodSeconds: 120
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  endpoint: /api/health/ready
+  initialDelaySeconds: 15
+  timeoutSeconds: 5
+  periodSeconds: 120
+  failureThreshold: 3
+  successThreshold: 1
