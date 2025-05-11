@@ -19,7 +19,7 @@ webserver:
   backendUrl: ""
 api:
   image:
-    repository: lmwcode/image:tag
+    repository: index.docker.io/lmwcode/lmw-fitness-backend:a7da36531bd593c2c66c162ea431ec4ef3a4a727
   host: api.lmwfitness.co.uk
   port: 8082
   path: /api/
