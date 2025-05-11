@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-frontend-deployment
+  name: {{ .Release.Name }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app: frontend
@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/name: frontend
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-frontend-deployment
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -70,11 +70,11 @@ spec:
       volumes:
       - name: frontend-config
         configMap:
-          name: {{ .Release.Name }}-frontend-configmap
+          name: {{ .Release.Name }}-configmap
       - name: nginx-cache
         emptyDir: {}
       - name: nginx-run
         emptyDir: {}
       - name: runtime-config
         configMap:
-          name: {{ .Release.Name }}-frontend-runtime-config
+          name: {{ .Release.Name }}-runtime-config

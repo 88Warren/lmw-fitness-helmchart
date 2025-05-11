@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-backend-deployment
+  name: {{ .Release.Name }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app: backend
@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/name: backend
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-backend-deployment
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -59,32 +59,32 @@ spec:
             cpu: "250m"
         envFrom:
         - configMapRef:
-            name: {{ .Release.Name }}-backend-configmap
+            name: {{ .Release.Name }}-configmap
         env:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-backend-secrets
+              name: {{ .Release.Name }}-secrets
               key: DB_PASSWORD
         - name: SMTP_PASSWORD 
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-backend-secrets
+              name: {{ .Release.Name }}-secrets
               key: SMTP_PASSWORD
         - name: RECAPTCHA_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-backend-secrets
+              name: {{ .Release.Name }}-secrets
               key: RECAPTCHA_SECRET
         - name: ACCESS_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-backend-secrets
+              name: {{ .Release.Name }}-secrets
               key: ACCESS_SECRET_KEY
         - name: REFRESH_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-backend-secrets
+              name: {{ .Release.Name }}-secrets
               key: REFRESH_SECRET_KEY
         readinessProbe:
           httpGet:
