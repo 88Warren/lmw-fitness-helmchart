@@ -2,7 +2,17 @@ namespace: lmw-fitness
 env: production
 allowedOrigin: https://www.lmwfitness.co.uk
 
+replicaCount: 1
+
+image:
+  pullPolicy: Always
+
+storage:
+  storageClass: standard
+
 webserver:
+  image:
+    repository: lmwcode/image:tag
   port: 5052
   type: NodePort
   nodePort: 31333
@@ -12,14 +22,9 @@ webserver:
   recaptcha: 6Ldn3-0qAAAAAMWv4iekZdMl4Xrfj2Av2zEL7onD
   backendUrl: ""
 
-image:
-  repository: lmwcode/lmw_fitness_webserver
-  tag: v1.3.7
-  pullPolicy: Always
-
-replicaCount: 1
-
 api:
+  image:
+    repository: lmwcode/image:tag
   host: api.lmwfitness.co.uk
   port: 8082
   path: /api/
@@ -33,9 +38,6 @@ database:
   port: 5432
   type: ClusterIP
   sslMode: disable
-
-storage:
-  storageClass: standard
 
 smtp:
   host: smtp.ionos.co.uk
