@@ -1,18 +1,14 @@
 namespace: lmw-fitness
 env: production
 allowedOrigin: https://www.lmwfitness.co.uk
-
 replicaCount: 1
-
 image:
   pullPolicy: Always
-
 storage:
   storageClass: standard
-
 webserver:
   image:
-    repository: lmwcode/image:tag
+    repository: index.docker.io/lmwcode/lmw-fitness-frontend:2e3cfac97267f5d1fa80a327390fe75f0187f13b
   port: 5052
   type: NodePort
   nodePort: 31333
@@ -21,31 +17,27 @@ webserver:
   pathType: Prefix
   recaptcha: 6Ldn3-0qAAAAAMWv4iekZdMl4Xrfj2Av2zEL7onD
   backendUrl: ""
-
 api:
   image:
     repository: lmwcode/image:tag
   host: api.lmwfitness.co.uk
   port: 8082
   path: /api/
-  type: NodePort  
+  type: NodePort
   nodePort: 30260
   pathType: Prefix
-
 database:
   name: LMWfitness
   user: postgres
   port: 5432
   type: ClusterIP
   sslMode: disable
-
 smtp:
   host: smtp.ionos.co.uk
   port: 587
   username: info@lmwfitness.co.uk
   from: info@lmwfitness.co.uk
   to: info@lmwfitness.co.uk
-
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 30
