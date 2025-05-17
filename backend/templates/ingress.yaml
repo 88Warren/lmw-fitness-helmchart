@@ -26,22 +26,22 @@ spec:
   - host: {{ .Values.api.host }}
     http:
       paths:
-      - path: /api/?(.*)
-        pathType: Prefix
+      - path: /api/(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ .Release.Name }}-service
             port:
               number: {{ .Values.api.port }}
-      - path: /debug/images/?(.*)
-        pathType: Prefix
+      - path: /debug/images/(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ .Release.Name }}-service
             port:
               number: {{ .Values.api.port }}
-      - path: /images/?(.*)
-        pathType: Prefix
+      - path: /images/(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ .Release.Name }}-service
@@ -50,15 +50,15 @@ spec:
   - host: www.lmwfitness.co.uk
     http:
       paths:
-      - path: /api/?(.*)
-        pathType: Prefix
+      - path: /api/(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ .Release.Name }}-service
             port:
               number: {{ .Values.api.port }}
-      - path: /images/?(.*)
-        pathType: Prefix
+      - path: /images/(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ .Release.Name }}-service
