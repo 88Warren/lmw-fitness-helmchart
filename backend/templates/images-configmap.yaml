@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-images
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+binaryData:
+  LMW_fitness_Hero_Image3.jpg: {{ .Files.Get "images/LMW_fitness_Hero_Image3.jpg" | b64enc }}
+  LMW_fitness_Hero_Image2.jpg: {{ .Files.Get "images/LMW_fitness_Hero_Image2.jpg" | b64enc }}
+  LMW_fitness_Hero_Image.jpg: {{ .Files.Get "images/LMW_fitness_Hero_Image.jpg" | b64enc }}
+  LMW_fitness_PT.JPG: {{ .Files.Get "images/LMW_fitness_PT.JPG" | b64enc }}
+  LMW_fitness_NavBar_Logo.png: {{ .Files.Get "images/LMW_fitness_NavBar_Logo.png" | b64enc }} 

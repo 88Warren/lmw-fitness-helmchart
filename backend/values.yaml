@@ -15,6 +15,8 @@ api:
   type: NodePort
   nodePort: 30260
   pathType: Prefix
+images:
+  directory: images
 database:
   name: LMWfitness
   user: postgres
