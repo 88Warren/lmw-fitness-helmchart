@@ -16,7 +16,7 @@ webserver:
   path: /
   pathType: Prefix
   recaptcha: 6Ldn3-0qAAAAAMWv4iekZdMl4Xrfj2Av2zEL7onD
-  backendUrl: ""
+  backendUrl: "https://api.lmwfitness.co.uk"
 api:
   port: 8082
   path: /api/
