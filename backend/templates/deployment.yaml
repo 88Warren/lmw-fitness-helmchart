@@ -38,11 +38,11 @@ spec:
             memory: "32Mi"
             cpu: "100m"
       containers:
-      - name: debug-shell
-        image: nicolaka/netshoot
-        command: [ "sleep", "3600" ]
-        stdin: true
-        tty: true
+      # - name: debug-shell
+      #   image: nicolaka/netshoot
+      #   command: [ "sleep", "3600" ]
+      #   stdin: true
+      #   tty: true
       - name: backend
         image: {{ .Values.api.image.repository }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -52,11 +52,11 @@ spec:
           protocol: TCP
         resources:
           requests:
-            memory: "48Mi"
-            cpu: "150m"
+            memory: "128Mi"
+            cpu: "200m"
           limits:
-            memory: "64Mi"
-            cpu: "250m"
+            memory: "256Mi"
+            cpu: "500m"
         envFrom:
         - configMapRef:
             name: {{ .Release.Name }}-configmap
@@ -104,3 +104,11 @@ spec:
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.readinessProbe.endpoint }}
+            port: {{ .Values.api.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 30
+          timeoutSeconds: 5
