@@ -16,12 +16,80 @@ data:
         listen {{ .Values.webserver.port }};
         server_name {{ .Values.webserver.host }};
         include       /etc/nginx/mime.types;
-        default_type  application/octet-stream;
+        default_type  text/html;
 
-        # Add cache control headers
-        add_header Cache-Control "no-cache, no-store, must-revalidate";
-        add_header Pragma "no-cache";
-        add_header Expires "0";
+        types {
+          application/javascript js mjs;
+          text/css css;
+          text/html html;
+          application/json json;
+          image/svg+xml svg;
+          font/woff2 woff2;
+          image/jpeg jpg jpeg JPG JPEG;
+          image/png png PNG;
+          image/gif gif GIF;
+          application/font-woff woff;
+          application/font-woff2 woff2;
+          application/x-font-ttf ttf;
+          application/x-font-opentype otf;
+          application/vnd.ms-fontobject eot;
+          font/woff woff;
+          font/woff2 woff2;
+          font/ttf ttf;
+          font/eot eot;
+          font/opentype otf;
+        };
+
+        # Add cache control headers for static assets
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header Pragma "cache";
+        add_header Expires "365d";
+
+        # Add cache control headers for API and dynamic content
+        location {{ .Values.api.path }} {
+          proxy_pass http://{{ .Values.namespace }}-api-service:{{ .Values.api.port }};
+          proxy_ssl_verify off;  # For internal cluster communication
+          proxy_ssl_server_name on;
+          proxy_http_version 1.1;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_read_timeout 60s;
+          proxy_connect_timeout 60s;
+          proxy_send_timeout 60s;
+          proxy_buffering off;
+          proxy_buffer_size 128k;
+          proxy_buffers 4 256k;
+          proxy_busy_buffers_size 256k;
+          access_log /var/log/nginx/api_access.log;
+          error_log /var/log/nginx/api_error.log debug;
+
+          # Add CORS headers
+          add_header 'Access-Control-Allow-Origin' 'https://www.lmwfitness.co.uk' always;
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+          add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+          add_header 'Access-Control-Allow-Credentials' 'true' always;
+          
+          if ($request_method = 'OPTIONS') {
+              add_header 'Access-Control-Allow-Origin' 'https://www.lmwfitness.co.uk' always;
+              add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+              add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+              add_header 'Access-Control-Allow-Credentials' 'true' always;
+              add_header 'Content-Type' 'text/plain charset=UTF-8';
+              add_header 'Content-Length' '0';
+              return 204;
+          }
+
+          # Error handling
+          proxy_intercept_errors on;
+          error_page 502 503 504 /50x.html;
+
+          # No cache for API responses
+          add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+          add_header Pragma "no-cache" always;
+          add_header Expires "0" always;
+        }
 
         error_log /var/log/nginx/error.log debug;
         access_log /var/log/nginx/access.log;
