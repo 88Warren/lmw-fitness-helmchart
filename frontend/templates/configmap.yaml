@@ -18,27 +18,6 @@ data:
         include       /etc/nginx/mime.types;
         default_type  text/html;
 
-        types {
-          application/javascript js mjs;
-          text/css css;
-          text/html html;
-          application/json json;
-          image/svg+xml svg;
-          image/jpeg jpg jpeg;
-          image/png png;
-          image/gif gif;
-          application/font-woff woff;
-          application/font-woff2 woff2;
-          application/x-font-ttf ttf;
-          application/x-font-opentype otf;
-          application/vnd.ms-fontobject eot;
-          font/woff woff;
-          font/woff2 woff2;
-          font/ttf ttf;
-          font/eot eot;
-          font/opentype otf;
-        };
-
         # Add cache control headers for static assets
         add_header Cache-Control "public, max-age=31536000, immutable";
         add_header Pragma "cache";
