@@ -82,6 +82,11 @@ data:
           proxy_send_timeout 60s;
           access_log off;
 
+          # Add cache control headers
+          add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+          add_header Pragma "no-cache" always;
+          add_header Expires "0" always;
+
           # Error handling
           proxy_intercept_errors on;
           error_page 502 503 504 /50x.html;
