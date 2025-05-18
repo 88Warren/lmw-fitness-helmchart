@@ -24,10 +24,9 @@ data:
           text/html html;
           application/json json;
           image/svg+xml svg;
-          font/woff2 woff2;
-          image/jpeg jpg jpeg JPG JPEG;
-          image/png png PNG;
-          image/gif gif GIF;
+          image/jpeg jpg jpeg;
+          image/png png;
+          image/gif gif;
           application/font-woff woff;
           application/font-woff2 woff2;
           application/x-font-ttf ttf;
