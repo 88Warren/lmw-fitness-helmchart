@@ -16,7 +16,7 @@ data:
         listen {{ .Values.webserver.port }};
         server_name {{ .Values.webserver.host }};
         include       /etc/nginx/mime.types;
-        default_type  text/html;
+        default_type  application/octet-stream;
 
         # Add cache control headers for static assets
         add_header Cache-Control "public, max-age=31536000, immutable";
@@ -28,7 +28,7 @@ data:
         access_log /var/log/nginx/access.log;
 
         location {{ .Values.api.path }} {
-          proxy_pass http://{{ .Values.namespace }}-api-service:{{ .Values.api.port }};
+          proxy_pass http://{{ .Release.Name }}-service:{{ .Values.api.port }};
           proxy_ssl_verify off;  # For internal cluster communication
           proxy_ssl_server_name on;
           proxy_http_version 1.1;
@@ -74,7 +74,7 @@ data:
 
         # Proxy static assets to backend
         location /images/ {
-          proxy_pass http://{{ .Values.namespace }}-api-service:{{ .Values.api.port }}/images/;
+          proxy_pass http://{{ .Release.Name }}-service:{{ .Values.api.port }}/images/;
           proxy_ssl_verify off;  # For internal cluster communication
           proxy_ssl_server_name on;
           proxy_http_version 1.1;
@@ -100,7 +100,7 @@ data:
 
         # Proxy static assets to backend
         location /static/ {
-          proxy_pass http://{{ .Values.namespace }}-api-service:{{ .Values.api.port }}/static/;
+          proxy_pass http://{{ .Release.Name }}-service:{{ .Values.api.port }}/static/;
           proxy_ssl_verify off;  # For internal cluster communication
           proxy_ssl_server_name on;
           proxy_http_version 1.1;

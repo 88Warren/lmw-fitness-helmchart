@@ -8,7 +8,6 @@ metadata:
   annotations:
     meta.helm.sh/release-name: {{ .Release.Name }}-ingress
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-certificate: lmwfitness-ssl
 spec:

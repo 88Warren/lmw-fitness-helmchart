@@ -23,6 +23,8 @@ database:
   port: 5432
   type: ClusterIP
   sslMode: disable
+webserver:
+  host: www.lmwfitness.co.uk
 smtp:
   host: smtp.ionos.co.uk
   port: 587
