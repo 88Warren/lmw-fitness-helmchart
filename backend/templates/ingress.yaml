@@ -19,7 +19,6 @@ spec:
   tls: 
     - hosts:
       - {{ .Values.api.host | quote }}
-      - {{ .Values.webserver.host | quote }}
       secretName: lmwfitness-ssl
   rules:
   - host: {{ .Values.api.host | quote }}
@@ -33,23 +32,6 @@ spec:
             port:
               number: {{ .Values.api.port }}
       - path: /debug/images/
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Release.Name }}-service
-            port:
-              number: {{ .Values.api.port }}
-      - path: /images/
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Release.Name }}-service
-            port:
-              number: {{ .Values.api.port }}
-  - host: {{ .Values.webserver.host | quote }}
-    http:
-      paths:
-      - path: /api/
         pathType: Prefix
         backend:
           service:

@@ -28,7 +28,7 @@ data:
         access_log /var/log/nginx/access.log;
 
         location {{ .Values.api.path }} {
-          proxy_pass http://lmw-fitness-api-service:{{ .Values.api.port }};
+          proxy_pass https://lmw-fitness-api-service:{{ .Values.api.port }};
           proxy_ssl_verify off;  # For internal cluster communication
           proxy_ssl_server_name on;
           proxy_http_version 1.1;
@@ -74,7 +74,7 @@ data:
 
         # Proxy static assets to backend
         location /images/ {
-          proxy_pass http://lmw-fitness-api-service:{{ .Values.api.port }}/images/;
+          proxy_pass https://lmw-fitness-api-service:{{ .Values.api.port }}/images/;
           proxy_ssl_verify off;  # For internal cluster communication
           proxy_ssl_server_name on;
           proxy_http_version 1.1;
@@ -100,7 +100,7 @@ data:
 
         # Proxy static assets to backend
         location /static/ {
-          proxy_pass http://lmw-fitness-api-service:{{ .Values.api.port }}/static/;
+          proxy_pass https://lmw-fitness-api-service:{{ .Values.api.port }}/static/;
           proxy_ssl_verify off;  # For internal cluster communication
           proxy_ssl_server_name on;
           proxy_http_version 1.1;
