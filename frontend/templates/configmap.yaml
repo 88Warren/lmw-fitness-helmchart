@@ -27,7 +27,7 @@ data:
         error_log /var/log/nginx/error.log debug;
         access_log /var/log/nginx/access.log;
 
-                location / {
+        location / {
           root /usr/share/nginx/html;
           index index.html;
           access_log off;
