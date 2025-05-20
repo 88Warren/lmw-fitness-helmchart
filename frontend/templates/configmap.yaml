@@ -27,6 +27,24 @@ data:
         error_log /var/log/nginx/error.log debug;
         access_log /var/log/nginx/access.log;
 
+                location / {
+          root /usr/share/nginx/html;
+          index index.html;
+          access_log off;
+          try_files $uri $uri/ /index.html;
+
+          # Add headers for SPA
+          add_header Cache-Control "no-cache, no-store, must-revalidate";
+          add_header Pragma "no-cache";
+          add_header Expires "0";
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+          root /usr/share/nginx/html;
+          internal;
+        }
+
         location {{ .Values.api.path }} {
           proxy_pass https://lmw-fitness-api-service:{{ .Values.api.port }};
           proxy_ssl_verify off;  # For internal cluster communication
@@ -96,50 +114,6 @@ data:
           # Error handling
           proxy_intercept_errors on;
           error_page 404 /404.html;
-        }
-
-        # Proxy static assets to backend
-        location /static/ {
-          proxy_pass https://lmw-fitness-api-service:{{ .Values.api.port }}/static/;
-          proxy_ssl_verify off;  # For internal cluster communication
-          proxy_ssl_server_name on;
-          proxy_http_version 1.1;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_read_timeout 60s;
-          proxy_connect_timeout 60s;
-          proxy_send_timeout 60s;
-          access_log off;
-          error_log /var/log/nginx/static_error.log debug;
-
-          # Add cache control headers
-          add_header Cache-Control "public, max-age=31536000, immutable" always;
-          add_header Pragma "cache" always;
-          add_header Expires "365d" always;
-
-          # Error handling
-          proxy_intercept_errors on;
-          error_page 404 /404.html;
-        }
-
-        location / {
-          root /usr/share/nginx/html;
-          index index.html;
-          access_log off;
-          try_files $uri $uri/ /index.html;
-
-          # Add headers for SPA
-          add_header Cache-Control "no-cache, no-store, must-revalidate";
-          add_header Pragma "no-cache";
-          add_header Expires "0";
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-          root /usr/share/nginx/html;
-          internal;
         }
       }
     }
