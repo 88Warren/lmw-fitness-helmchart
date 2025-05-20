@@ -64,9 +64,12 @@ spec:
           mountPath: /var/cache/nginx
         - name: nginx-run
           mountPath: /var/run
-        - name: runtime-config
-          mountPath: /usr/share/nginx/html/config.js
-          subPath: config.js
+        # - name: runtime-config
+        #   mountPath: /usr/share/nginx/html/config.js
+        #   subPath: config.js
+      envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-runtime-configmap
       volumes:
       - name: frontend-config
         configMap:
@@ -75,6 +78,6 @@ spec:
         emptyDir: {}
       - name: nginx-run
         emptyDir: {}
-      - name: runtime-config
-        configMap:
-          name: {{ .Release.Name }}-runtime-config
+      # - name: runtime-config
+      #   configMap:
+      #     name: {{ .Release.Name }}-runtime-config
