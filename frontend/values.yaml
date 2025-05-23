@@ -20,6 +20,7 @@ webserver:
 api:
   port: 8082
   path: /api/
+  pathType: Prefix
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 30

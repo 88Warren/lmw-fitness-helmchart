@@ -20,6 +20,27 @@ spec:
   - host: {{ .Values.webserver.host | quote }}
     http:
       paths:
+      - path: {{ .Values.api.path }}
+        pathType: {{ .Values.api.pathType }}
+        backend:
+          service:
+            name: lmw-fitness-api-service
+            port:
+              number: {{ .Values.api.port }}
+      - path: /debug/images/
+        pathType: {{ .Values.api.pathType }}
+        backend:
+          service:
+            name: lmw-fitness-api-service
+            port:
+              number: {{ .Values.api.port }}
+      - path: /images/
+        pathType: {{ .Values.api.pathType }}
+        backend:
+          service:
+            name: lmw-fitness-api-service
+            port:
+              number: {{ .Values.api.port }}
       - path: {{ .Values.webserver.path }}
         pathType: {{ .Values.webserver.pathType }}
         backend:
