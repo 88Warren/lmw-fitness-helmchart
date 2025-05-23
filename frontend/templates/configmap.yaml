@@ -13,7 +13,7 @@ data:
     events {}
     http {
       server {
-        listen 80
+        listen 80;
         server_name lmwfitness.co.uk www.lmwfitness.co.uk;
         include       /etc/nginx/mime.types;
         default_type  application/octet-stream;
