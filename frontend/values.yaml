@@ -8,7 +8,7 @@ storage:
   storageClass: standard
 webserver:
   image:
-    repository: index.docker.io/lmwcode/lmw-fitness-frontend:7acf23053f14a8c039366accde54e2c417b8d3c7
+    repository: index.docker.io/lmwcode/lmw-fitness-frontend:2ca8df979f539ae59db14a3aabc357cd53dcc280
   port: 5052
   type: NodePort
   nodePort: 31333
