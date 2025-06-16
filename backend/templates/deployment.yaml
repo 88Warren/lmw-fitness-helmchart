@@ -64,32 +64,32 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ .Values.api.secretName }}
               key: DB_PASSWORD
         - name: SMTP_PASSWORD 
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ .Values.api.secretName }}
               key: SMTP_PASSWORD
         - name: RECAPTCHA_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ .Values.api.secretName }}
               key: RECAPTCHA_SECRET
         - name: ACCESS_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ .Values.api.secretName }}
               key: ACCESS_SECRET_KEY
         - name: REFRESH_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ .Values.api.secretName }}
               key: REFRESH_SECRET_KEY
         - name: BREVO_API_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ .Values.api.secretName }}
               key: BREVO_API_KEY
         readinessProbe:
           httpGet:
