@@ -10,7 +10,7 @@ storage:
   storageClass: standard
 api:
   image:
-    repository: index.docker.io/lmwcode/lmw-fitness-backend:f83759e595a91d941e4eb7cbf9a6617cb3efbcb8
+    repository: index.docker.io/lmwcode/lmw-fitness-backend:7f422b87a791288891bd47da31b5503dbf3e61af
   host: api.lmwfitness.co.uk
   port: 8082
   path: /api/
