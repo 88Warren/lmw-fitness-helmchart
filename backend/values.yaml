@@ -34,7 +34,7 @@ smtp:
 brevo:
   listID: 3
   apiURL: https://api.brevo.com/v3
-  DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirmed
+  DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirm
   DOITemplateID: 2
 livenessProbe:
   endpoint: /api/health/live
