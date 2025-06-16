@@ -86,6 +86,11 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: REFRESH_SECRET_KEY
+        - name: BREVO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: BREVO_API_KEY
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.endpoint }}

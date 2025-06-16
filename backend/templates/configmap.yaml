@@ -18,3 +18,7 @@ data:
   SMTP_USERNAME: "{{ .Values.smtp.username }}"
   SMTP_FROM: "{{ .Values.smtp.from }}"
   SMTP_TO: "{{ .Values.smtp.to }}"
+  BREVO_LIST_ID: "{{ .Values.brevo.listID }}"
+  BREVO_API_URL: "{{ .Values.brevo.apiURL }}"
+  BREVO_DOI_REDIRECT_URL: "{{ .Values.brevo.DOIRedirectURL }}"
+  BREVO_DOI_TEMPLATE_ID: "{{ .Values.brevo.DOITemplateID }}"
