@@ -6,6 +6,7 @@ metadata:
 data:
   GO_ENV: "{{ .Values.env }}"
   ALLOWED_ORIGIN: "{{ .Values.allowedOrigin }}"
+  ALLOW_CREDENTIALS: "{{ .Values.allowCredentials }}"
   PORT: "{{ .Values.api.port }}"
   DB_HOST: "{{ .Release.Name }}-postgres-service"
   DB_USER: "{{ .Values.database.user }}"
@@ -18,6 +19,8 @@ data:
   SMTP_USERNAME: "{{ .Values.smtp.username }}"
   SMTP_FROM: "{{ .Values.smtp.from }}"
   SMTP_TO: "{{ .Values.smtp.to }}"
+  PLATFORM: "{{ .Values.platform }}"
+  SECRET_NAME: "{{ .Values.api.secretName }}"
   BREVO_LIST_ID: "{{ .Values.brevo.listID }}"
   BREVO_API_URL: "{{ .Values.brevo.apiURL }}"
   BREVO_DOI_REDIRECT_URL: "{{ .Values.brevo.DOIRedirectURL }}"

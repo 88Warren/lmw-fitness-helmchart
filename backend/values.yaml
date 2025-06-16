@@ -1,7 +1,9 @@
 namespace: lmw-fitness
 env: production
 allowedOrigin: https://www.lmwfitness.co.uk
+allowCredentials: false
 replicaCount: 1
+platform: linux/amd64
 image:
   pullPolicy: Always
 storage:
@@ -15,6 +17,7 @@ api:
   type: NodePort
   nodePort: 30260
   pathType: Prefix
+  secretName: lmw-fitness-api-secrets
 images:
   directory: images
 database:
