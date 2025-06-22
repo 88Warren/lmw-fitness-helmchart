@@ -7,6 +7,7 @@ data:
   GO_ENV: "{{ .Values.env }}"
   ALLOWED_ORIGIN: "{{ .Values.allowedOrigin }}"
   ALLOW_CREDENTIALS: "{{ .Values.allowCredentials }}"
+  FRONTEND_URL: "{{ .Values.frontend_url }}"
   PORT: "{{ .Values.api.port }}"
   DB_HOST: "{{ .Release.Name }}-postgres-service"
   DB_USER: "{{ .Values.database.user }}"

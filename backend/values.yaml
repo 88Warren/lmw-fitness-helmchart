@@ -2,6 +2,7 @@ namespace: lmw-fitness
 env: production
 allowedOrigin: https://www.lmwfitness.co.uk
 allowCredentials: false
+frontend_url: https://www.lmwfitness.co.uk
 replicaCount: 1
 platform: linux/amd64
 image:
