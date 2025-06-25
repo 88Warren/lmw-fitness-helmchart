@@ -36,10 +36,16 @@ smtp:
   from: info@lmwfitness.co.uk
   to: info@lmwfitness.co.uk
 brevo:
-  listID: 3
   apiURL: https://api.brevo.com/v3
   DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirm
-  DOITemplateID: 2
+  newsletter:
+    listID: 15
+    DOItemplateID: 2
+  payments:
+    beginnerListID: 10
+    advancedListID: 12
+    tailoredListID: 14
+    minsetPackageListID: 17
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 30
