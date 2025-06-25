@@ -11,7 +11,7 @@ storage:
   storageClass: standard
 api:
   image:
-    repository: index.docker.io/lmwcode/lmw-fitness-backend:5dfb68bf26f1ed3653618a1fd2c168c09416b497
+    repository: index.docker.io/lmwcode/lmw-fitness-backend:7f67838e343bf63131e6714185e03b2e5270d921
   host: api.lmwfitness.co.uk
   port: 8082
   path: /api/
@@ -37,10 +37,10 @@ smtp:
   to: info@lmwfitness.co.uk
 brevo:
   apiURL: https://api.brevo.com/v3
-  DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirm
   newsletter:
     listID: 15
     DOItemplateID: 2
+    DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirm
   payments:
     beginnerListID: 10
     advancedListID: 12
