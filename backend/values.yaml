@@ -41,11 +41,11 @@ brevo:
     listID: 15
     DOItemplateID: 2
     DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirm
-  payments:
-    beginnerListID: 10
-    advancedListID: 12
-    tailoredListID: 14
-    minsetPackageListID: 17
+  # payments:
+  #   beginnerListID: 10
+  #   advancedListID: 12
+  #   tailoredListID: 14
+  #   minsetPackageListID: 17
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 30
