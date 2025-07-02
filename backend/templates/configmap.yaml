@@ -9,7 +9,7 @@ data:
   ALLOW_CREDENTIALS: "{{ .Values.allowCredentials }}"
   FRONTEND_URL: "{{ .Values.frontend_url }}"
   PORT: "{{ .Values.api.port }}"
-  DB_HOST: "{{ .Release.Name }}-postgres-service"
+  DB_HOST: "lmwfitness-backend-postgres-service-stage"
   DB_USER: "{{ .Values.database.user }}"
   DB_NAME: "{{ .Values.database.name }}"
   DB_PORT: "{{ .Values.database.port }}"
