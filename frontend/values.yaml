@@ -11,7 +11,6 @@ webserver:
     repository: index.docker.io/lmwcode/lmw-fitness-frontend:9ce5fca8341367071dc3f6d2d0029fae08948524
   port: 5052
   type: NodePort
-  nodePort: 31333
   host: www.lmwfitness.co.uk
   path: /
   pathType: Prefix
