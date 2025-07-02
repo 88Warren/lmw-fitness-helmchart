@@ -27,9 +27,9 @@ spec:
       - name: wait-for-postgres
         image: busybox
         command: 
-        - "bash"
+        - "sh"
         - "-c"
-        - "until (echo > /dev/tcp/lmwfitness-backend-postgres-service.lmw-fitness.svc.cluster.local/5432) 2>/dev/null; do echo waiting for postgres; sleep 20; done;"
+        - "until nc -z lmwfitness-backend-postgres-service.lmw-fitness.svc.cluster.local 5432; do echo waiting for postgres; sleep 20; done;"
         resources:
           requests:
             memory: "16Mi"
