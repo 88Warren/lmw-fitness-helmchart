@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment
+  name: lmwfitness-backend-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app: backend
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/instance: lmwfitness-backend
     app.kubernetes.io/name: backend
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-name: lmwfitness-backend-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: backend
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: lmwfitness-backend
   template:
     metadata:
       labels:
         app: backend
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/instance: lmwfitness-backend
     spec:
       initContainers:
       - name: wait-for-postgres
@@ -59,7 +59,7 @@ spec:
             cpu: "500m"
         envFrom:
         - configMapRef:
-            name: {{ .Release.Name }}-configmap
+            name: lmwfitness-backend-configmap
         env:
         - name: DB_PASSWORD
           valueFrom:

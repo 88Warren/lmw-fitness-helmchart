@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-configmap
+  name: lmwfitness-backend-configmap
   namespace: {{ .Values.namespace }}
 data:
   GO_ENV: "{{ .Values.env }}"

@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-postgres-pvc-v2
+  name: lmwfitness-backend-postgres-pvc-v2
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Release.Name }}-postgres-service
+    app: lmwfitness-backend-postgres-service
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-name: lmwfitness-backend-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
-  volumeName: {{ .Release.Name }}-postgres-pv-v2
+  volumeName: lmwfitness-backend-postgres-pv-v2
   storageClassName: {{ .Values.storage.storageClass }}
   accessModes:
     - ReadWriteOnce
@@ -21,11 +21,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name }}-postgres-pv-v2
+  name: lmwfitness-backend-postgres-pv-v2
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-name: lmwfitness-backend-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   storageClassName: {{ .Values.storage.storageClass }}
@@ -40,22 +40,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-postgres-deployment
+  name: lmwfitness-backend-postgres-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-name: lmwfitness-backend-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-postgres
+      app: lmwfitness-backend-postgres
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-postgres
+        app: lmwfitness-backend-postgres
     spec:
       containers:
       - name: postgres
@@ -73,17 +73,17 @@ spec:
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-configmap
+              name: lmwfitness-backend-configmap
               key: DB_USER
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-configmap
+              name: lmwfitness-backend-configmap
               key: DB_NAME
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
+              name: lmwfitness-backend-secrets
               key: DB_PASSWORD
         volumeMounts:
           - mountPath: /var/lib/postgresql/data
@@ -111,21 +111,21 @@ spec:
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-postgres-pvc-v2
+            claimName: lmwfitness-backend-postgres-pvc-v2
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-postgres-service
+  name: lmwfitness-backend-postgres-service
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-name: lmwfitness-backend-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   selector:
-    app: {{ .Release.Name }}-postgres
+    app: lmwfitness-backend-postgres
   ports:
   - port: {{ .Values.database.port }}
     targetPort: {{ .Values.database.port }}
