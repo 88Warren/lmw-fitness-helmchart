@@ -29,7 +29,7 @@ spec:
         command: 
         - "sh"
         - "-c"
-        - "until nc -z {{ .Release.Name }}-postgres-service {{ .Values.database.port }}; do echo waiting for postgres; sleep 2; done;"
+        - "until nc -z lmwfitness-backend-postgres-service {{ .Values.database.port }}; do echo waiting for postgres; sleep 2; done;"
         resources:
           requests:
             memory: "16Mi"
