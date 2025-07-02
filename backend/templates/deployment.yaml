@@ -29,7 +29,7 @@ spec:
         command: 
         - "sh"
         - "-c"
-        - "until nc -z lmwfitness-backend-postgres-service.lmw-fitness.svc.cluster.local {{ .Values.database.port }}; do echo waiting for postgres; sleep 10; done;"
+        - "until (echo > /dev/tcp/lmwfitness-backend-postgres-service.lmw-fitness.svc.cluster.local/{{ .Values.database.port }}) 2>/dev/null; do echo waiting for postgres; sleep 10; done;"
         resources:
           requests:
             memory: "16Mi"
