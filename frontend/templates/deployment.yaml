@@ -56,6 +56,11 @@ spec:
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
+
+        envFrom:  
+          - configMapRef:
+              name: lmwfitness-frontend-runtime-configmap
+
         volumeMounts:
         - name: frontend-config
           mountPath: /etc/nginx/nginx.conf
@@ -64,20 +69,3 @@ spec:
           mountPath: /var/cache/nginx
         - name: nginx-run
           mountPath: /var/run
-        # - name: runtime-config
-        #   mountPath: /usr/share/nginx/html/config.js
-        #   subPath: config.js
-      envFrom:
-        - configMapRef:
-            name: lmwfitness-frontend-runtime-configmap
-      volumes:
-      - name: frontend-config
-        configMap:
-          name: lmwfitness-frontend-configmap
-      - name: nginx-cache
-        emptyDir: {}
-      - name: nginx-run
-        emptyDir: {}
-      # - name: runtime-config
-      #   configMap:
-      #     name: lmwfitness-frontend-runtime-config
