@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lmwfitness-frontend-deployment
+  name: {{ .Release.Name }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
-    app: frontend
+    app: {{ .Values.webserver.applicationType }}
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/instance: lmwfitness-frontend
-    app.kubernetes.io/name: frontend
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ .Values.webserver.applicationType }}
   annotations:
-    meta.helm.sh/release-name: lmwfitness-frontend-deployment
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: frontend
-      app.kubernetes.io/instance: lmwfitness-frontend
+      app: {{ .Values.webserver.applicationType }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -24,7 +24,7 @@ spec:
         app.kubernetes.io/instance: lmwfitness-frontend
     spec:
       containers:
-      - name: frontend
+      - name: {{ .Values.webserver.applicationType }}
         image: {{ .Values.webserver.image.repository }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -59,7 +59,7 @@ spec:
 
         envFrom:  
           - configMapRef:
-              name: lmwfitness-frontend-runtime-configmap
+              name: {{ .Release.Name }}-runtime-configmap
 
         volumeMounts:
         - name: frontend-config
@@ -72,7 +72,7 @@ spec:
       volumes:
       - name: frontend-config
         configMap:
-          name: lmwfitness-frontend-configmap
+          name: {{ .Release.Name }}-configmap
       - name: nginx-cache
         emptyDir: {}
       - name: nginx-run

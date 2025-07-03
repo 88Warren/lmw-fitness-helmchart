@@ -16,11 +16,13 @@ webserver:
   pathType: Prefix
   recaptcha: 6Ldn3-0qAAAAAMWv4iekZdMl4Xrfj2Av2zEL7onD
   backendUrl: "https://api.lmwfitness.co.uk"
+  applicationType: frontend
 api:
   host: api.lmwfitness.co.uk
   port: 8082
   path: /api/
   pathType: Prefix
+  applicationType: backend
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 60

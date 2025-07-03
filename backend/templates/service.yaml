@@ -1,20 +1,20 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lmwfitness-backend-service
+  name: {{ .Release.Name }}-service
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: lmwfitness-backend-service
+    meta.helm.sh/release-name: {{ .Release.Name }}-service
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   selector:
-    app: backend
-    app.kubernetes.io/instance: lmwfitness-backend
+    app: {{ .Values.api.applicationType }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
   - port: {{ .Values.api.port }}
     targetPort: {{ .Values.api.port }}
-    protocol: TCP
+    protocol: {{ .Values.api.protocol }}
   type: {{ .Values.api.type }}
   

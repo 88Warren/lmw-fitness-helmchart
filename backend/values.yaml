@@ -16,8 +16,9 @@ api:
   port: 8082
   path: /api/
   type: NodePort
+  protocol: TCP
   pathType: Prefix
-  secretName: lmwfitness-backend-secrets
+  applicationType: backend
 images:
   directory: images
 database:
@@ -25,6 +26,7 @@ database:
   user: postgres
   port: 5432
   type: ClusterIP
+  protocol: TCP
   sslMode: disable
 webserver:
   host: www.lmwfitness.co.uk

@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lmwfitness-frontend-service
+  name: {{ .Release.Name }}-service
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: lmwfitness-frontend-service
+    meta.helm.sh/release-name: {{ .Release.Name }}-service
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   selector:
-    app: frontend
-    app.kubernetes.io/instance: lmwfitness-frontend
+    app: {{ .Values.webserver.applicationType }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.webserver.type }}
   ports:
   - port: {{ .Values.webserver.port }}

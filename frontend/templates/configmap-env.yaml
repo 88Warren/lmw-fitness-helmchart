@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: lmwfitness-frontend-runtime-configmap
+  name: {{ .Release.Name }}-runtime-configmap
   namespace: {{ .Values.namespace }}
 data:
   VITE_BACKEND_URL: {{ .Values.webserver.backendUrl }}

@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lmwfitness-backend-deployment
+  name: {{ .Release.Name }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
-    app: backend
+    app: {{ .Values.webserver.applicationType }}
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/instance: lmwfitness-backend
-    app.kubernetes.io/name: backend
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ .Values.api.applicationType }}
   annotations:
-    meta.helm.sh/release-name: lmwfitness-backend-deployment
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: backend
-      app.kubernetes.io/instance: lmwfitness-backend
+      app: {{ .Values.api.applicationType }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: backend
-        app.kubernetes.io/instance: lmwfitness-backend
+        app: {{ .Values.api.applicationType }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       initContainers:
       - name: wait-for-postgres
@@ -29,7 +29,7 @@ spec:
         command: 
         - "sh"
         - "-c"
-        - "until nc -z lmwfitness-backend-postgres-service-stage.lmw-fitness.svc.cluster.local 5432; do echo waiting for postgres; sleep 20; done;"
+        - "until nc -z {{ .Release.Name }}-postgres-service-stage.{{ .Values.namespace }}.svc.cluster.local 5432; do echo waiting for postgres; sleep 20; done;"
         resources:
           requests:
             memory: "16Mi"
@@ -43,7 +43,8 @@ spec:
         command: [ "sleep", "3600" ]
         stdin: true
         tty: true
-      - name: backend
+      - name: {{ .Values.api.applicationType }}
+        {{- if .Values.api.image.pullSecrets }}
         image: {{ .Values.api.image.repository }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -59,37 +60,37 @@ spec:
             cpu: "500m"
         envFrom:
         - configMapRef:
-            name: lmwfitness-backend-configmap
+            name: {{ .Release.Name }}-configmap
         env:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.api.secretName }}
+              name: {{ .Release.Name }}-secrets
               key: DB_PASSWORD
         - name: SMTP_PASSWORD 
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.api.secretName }}
+              name: {{ .Release.Name }}-secrets
               key: SMTP_PASSWORD
         - name: RECAPTCHA_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.api.secretName }}
+              name: {{ .Release.Name }}-secrets
               key: RECAPTCHA_SECRET
         - name: ACCESS_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.api.secretName }}
+              name: {{ .Release.Name }}-secrets
               key: ACCESS_SECRET_KEY
         - name: REFRESH_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.api.secretName }}
+              name: {{ .Release.Name }}-secrets
               key: REFRESH_SECRET_KEY
         - name: BREVO_API_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.api.secretName }}
+              name: {{ .Release.Name }}-secrets
               key: BREVO_API_KEY
         readinessProbe:
           httpGet:
