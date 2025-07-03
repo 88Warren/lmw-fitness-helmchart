@@ -6,6 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     meta.helm.sh/release-name: lmwfitness-frontend-ingress
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
