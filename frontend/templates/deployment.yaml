@@ -69,15 +69,15 @@ spec:
         #   subPath: config.js
       envFrom:
         - configMapRef:
-            name: {{ .Release.Name }}-runtime-configmap
+            name: lmwfitness-frontend-runtime-configmap
       volumes:
       - name: frontend-config
         configMap:
-          name: {{ .Release.Name }}-configmap
+          name: lmwfitness-frontend-configmap
       - name: nginx-cache
         emptyDir: {}
       - name: nginx-run
         emptyDir: {}
       # - name: runtime-config
       #   configMap:
-      #     name: {{ .Release.Name }}-runtime-config
+      #     name: lmwfitness-frontend-runtime-config
