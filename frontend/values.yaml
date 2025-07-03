@@ -23,14 +23,14 @@ api:
   pathType: Prefix
 livenessProbe:
   endpoint: /api/health/live
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   timeoutSeconds: 5
   periodSeconds: 120
   failureThreshold: 3
   successThreshold: 1
 readinessProbe:
   endpoint: /api/health/ready
-  initialDelaySeconds: 15
+  initialDelaySeconds: 60
   timeoutSeconds: 5
   periodSeconds: 120
   failureThreshold: 3
