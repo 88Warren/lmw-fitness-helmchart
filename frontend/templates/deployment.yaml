@@ -69,3 +69,11 @@ spec:
           mountPath: /var/cache/nginx
         - name: nginx-run
           mountPath: /var/run
+      volumes:
+      - name: frontend-config
+        configMap:
+          name: lmwfitness-frontend-configmap
+      - name: nginx-cache
+        emptyDir: {}
+      - name: nginx-run
+        emptyDir: {}  
