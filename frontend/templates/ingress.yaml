@@ -36,21 +36,21 @@ spec:
         pathType: {{ .Values.api.pathType }}
         backend:
           service:
-            name: lmw-fitness-backend-service
+            name: lmwfitness-backend-service
             port:
               number: {{ .Values.api.port }}
       - path: /debug/images/
         pathType: {{ .Values.api.pathType }}
         backend:
           service:
-            name: lmw-fitness-backend-service
+            name: lmwfitness-backend-service
             port:
               number: {{ .Values.api.port }}
       - path: /images/
         pathType: {{ .Values.api.pathType }}
         backend:
           service:
-            name: lmw-fitness-backend-service
+            name: lmwfitness-backend-service
             port:
               number: {{ .Values.api.port }}
      
