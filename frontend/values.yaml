@@ -23,8 +23,8 @@ api:
   path: /api/
   pathType: Prefix
   applicationType: backend
-backendServiceHost: lmwfitness-backend-service # Blue frontend
-# backendServiceHost: lmwfitness-backend-service-stage # Green frontend
+# backendServiceHost: lmwfitness-backend-service # Blue frontend (k get svc lmwfitness-frontend-service -n lmw-fitness -o yaml. Selector = colour)
+backendServiceHost: lmwfitness-backend-service-stage # Green frontend
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 60

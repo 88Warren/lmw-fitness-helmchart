@@ -60,7 +60,7 @@ data:
         }
 
         location /images/ {
-          proxy_pass https://lmwfitness-backend-service:{{ .Values.api.port }}/images/;
+          proxy_pass https://{{ .Values.backendServiceHost }}:{{ .Values.api.port }}/images/;
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -71,7 +71,7 @@ data:
           error_page 404 /404.html;
         }
         location /debug/images {
-          proxy_pass https://lmwfitness-backend-service:{{ .Values.api.port }}/debug/images;
+          proxy_pass https://{{ .Values.backendServiceHost }}:{{ .Values.api.port }}/debug/images;
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
