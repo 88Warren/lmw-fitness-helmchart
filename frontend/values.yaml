@@ -23,8 +23,15 @@ api:
   path: /api/
   pathType: Prefix
   applicationType: backend
+
+# blue
 # backendServiceHost: lmwfitness-backend-service # Blue frontend (k get svc lmwfitness-frontend-service -n lmw-fitness -o yaml. Selector = colour)
+
+# green
 backendServiceHost: lmwfitness-backend-service-stage # Green frontend
+
+# switch colour
+# k patch svc lmwfitness-frontend-service -n lmw-fitness -p '{"spec":{"selector":{"harness.io/color":"green"}}}'
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 60
