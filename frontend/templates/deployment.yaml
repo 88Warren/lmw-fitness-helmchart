@@ -60,7 +60,32 @@ spec:
         envFrom:  
           - configMapRef:
               name: {{ .Release.Name }}-runtime-configmap
-
+        env:
+        - name: STRIPE_PUBLISHABLE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: STRIPE_PUBLISHABLE_KEY
+        - name: BEGINNER_PRICE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: BEGINNER_PRICE_ID
+        - name: ADVANCED_PRICE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: ADVANCED_PRICE_ID
+        - name: TAILORED_COACHING_PRICE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: TAILORED_COACHING_PRICE_ID
+        - name: ULTIMATE_MINDSET_PACKAGE_PRICE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: ULTIMATE_MINDSET_PACKAGE_PRICE_ID
         volumeMounts:
         - name: frontend-config
           mountPath: /etc/nginx/nginx.conf
