@@ -10,32 +10,12 @@ metadata:
     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
-  volumeName: {{ .Release.Name }}-postgres-pv-v2
   storageClassName: {{ .Values.storage.storageClass }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi  
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ .Release.Name }}-postgres-pv-v2
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.storage.storageClass }}
-  capacity:
-    storage: 1Gi  
-  accessModes:
-    - ReadWriteOnce  
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: "/data/postgres"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,6 +37,24 @@ spec:
       labels:
         app: {{ .Release.Name }}-postgres
     spec:
+      initContainers:
+      - name: postgres-init
+        image: postgres:15
+        command:
+        - sh
+        - -c
+        - |
+          if [ -d "/var/lib/postgresql/data/pgdata" ]; then
+            echo "Existing data found, cleaning up..."
+            rm -rf /var/lib/postgresql/data/pgdata
+          fi
+          echo "PostgreSQL init container completed"
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-storage
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
       containers:
       - name: postgres
         image: postgres:latest
@@ -85,6 +83,8 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: DB_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
           - mountPath: /var/lib/postgresql/data
             name: postgres-storage
