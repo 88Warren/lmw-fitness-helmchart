@@ -19,24 +19,6 @@ spec:
       labels:
         app: {{ .Release.Name }}-postgres
     spec:
-      initContainers:
-      - name: postgres-init
-        image: postgres:15
-        command:
-        - sh
-        - -c
-        - |
-          if [ -d "/var/lib/postgresql/data/pgdata" ]; then
-            echo "Existing data found, cleaning up..."
-            rm -rf /var/lib/postgresql/data/pgdata
-          fi
-          echo "PostgreSQL init container completed"
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: postgres-storage
-        env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
       containers:
       - name: postgres
         image: postgres:15
@@ -68,8 +50,8 @@ spec:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
         volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: postgres-storage
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-storage
         livenessProbe:
           exec:
             command:
@@ -91,10 +73,9 @@ spec:
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
       volumes:
-        - name: postgres-storage
-          hostPath:
-            path: /data/postgres-{{ .Release.Name }}
-            type: DirectoryOrCreate
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-postgres-pvc-v2
 ---
 apiVersion: v1
 kind: Service
