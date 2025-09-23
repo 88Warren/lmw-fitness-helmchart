@@ -29,28 +29,28 @@ spec:
             name: {{ .Release.Name }}-service
             port:
               number: {{ .Values.webserver.port }}
-  - host: {{ .Values.api.host | quote }}
-    http:
-      paths:
-      - path: {{ .Values.api.path }}
-        pathType: {{ .Values.api.pathType }}
-        backend:
-          service:
-            name: lmwfitness-backend-service
-            port:
-              number: {{ .Values.api.port }}
-      - path: /debug/images/
-        pathType: {{ .Values.api.pathType }}
-        backend:
-          service:
-            name: lmwfitness-backend-service
-            port:
-              number: {{ .Values.api.port }}
-      - path: /images/
-        pathType: {{ .Values.api.pathType }}
-        backend:
-          service:
-            name: lmwfitness-backend-service
-            port:
-              number: {{ .Values.api.port }}
+  # - host: {{ .Values.api.host | quote }}
+  #   http:
+  #     paths:
+  #     - path: {{ .Values.api.path }}
+  #       pathType: {{ .Values.api.pathType }}
+  #       backend:
+  #         service:
+  #           name: lmwfitness-backend-service
+  #           port:
+  #             number: {{ .Values.api.port }}
+  #     - path: /debug/images/
+  #       pathType: {{ .Values.api.pathType }}
+  #       backend:
+  #         service:
+  #           name: lmwfitness-backend-service
+  #           port:
+  #             number: {{ .Values.api.port }}
+  #     - path: /images/
+  #       pathType: {{ .Values.api.pathType }}
+  #       backend:
+  #         service:
+  #           name: lmwfitness-backend-service
+  #           port:
+  #             number: {{ .Values.api.port }}
      

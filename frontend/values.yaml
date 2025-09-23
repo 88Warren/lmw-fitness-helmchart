@@ -32,6 +32,7 @@ backendServiceHost: lmwfitness-backend-service-stage # Green frontend
 
 # switch colour
 # k patch svc lmwfitness-frontend-service -n lmw-fitness -p '{"spec":{"selector":{"harness.io/color":"green"}}}'
+# if caching delete ingress k -n ingress-nginx delete pod -l app.kubernetes.io/name=ingress-nginx
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 60
