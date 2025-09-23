@@ -114,3 +114,22 @@ spec:
     targetPort: {{ .Values.database.port }}
     protocol: {{ .Values.database.protocol }}
   type: {{ .Values.database.type }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-postgres-pvc-v2
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}-postgres-service
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storage.storageClass }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi 
