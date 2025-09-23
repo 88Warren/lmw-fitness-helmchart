@@ -56,7 +56,10 @@ spec:
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
-          
+
+        envFrom:  
+          - configMapRef:
+              name: {{ .Release.Name }}-runtime-configmap
         env:
         - name: BACKEND_URL
           valueFrom:
