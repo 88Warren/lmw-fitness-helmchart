@@ -92,7 +92,9 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
       volumes:
         - name: postgres-storage
-          emptyDir: {}
+          hostPath:
+            path: /data/postgres-{{ .Release.Name }}
+            type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service
