@@ -44,7 +44,7 @@ spec:
         stdin: true
         tty: true
       - name: {{ .Values.api.applicationType }}
-        image: {{ .Values.api.image.repository }}:latest
+        image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.api.port }}
