@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.webserver.applicationType }}
-        image: {{ .Values.webserver.image.repository }}
+        image: {{ .Values.webserver.image.repository }}:{{ .Values.webserver.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.webserver.port }}
