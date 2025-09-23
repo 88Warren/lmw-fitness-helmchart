@@ -71,7 +71,7 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: STRIPE_PUBLISHABLE_KEY
-        - name: RECAPTCHA_SITE_KEY
+        - name: VITE_RECAPTCHA_SITE_KEY
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
