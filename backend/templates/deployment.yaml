@@ -115,6 +115,16 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: ADVANCED_PRICE_ID
+        - name: TAILORED_COACHING_PRICE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: TAILORED_COACHING_PRICE_ID
+        - name: ULTIMATE_MINDSET_PACKAGE_PRICE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: ULTIMATE_MINDSET_PACKAGE_PRICE_ID
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.endpoint }}
