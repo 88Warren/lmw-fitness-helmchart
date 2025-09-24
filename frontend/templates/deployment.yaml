@@ -61,12 +61,12 @@ spec:
           - configMapRef:
               name: {{ .Release.Name }}-runtime-configmap
         env:
-        - name: BACKEND_URL
+        - name: VITE_BACKEND_URL
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: BACKEND_URL
-        - name: STRIPE_PUBLISHABLE_KEY
+        - name: VITE_STRIPE_PUBLISHABLE_KEY
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
@@ -76,22 +76,22 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: RECAPTCHA_SITE_KEY
-        - name: BEGINNER_PRICE_ID
+        - name: VITE_BEGINNER_PRICE_ID
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: BEGINNER_PRICE_ID
-        - name: ADVANCED_PRICE_ID
+        - name: VITE_ADVANCED_PRICE_ID
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: ADVANCED_PRICE_ID
-        - name: TAILORED_COACHING_PRICE_ID
+        - name: VITE_TAILORED_COACHING_PRICE_ID
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: TAILORED_COACHING_PRICE_ID
-        - name: ULTIMATE_MINDSET_PACKAGE_PRICE_ID
+        - name: VITE_ULTIMATE_MINDSET_PACKAGE_PRICE_ID
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
