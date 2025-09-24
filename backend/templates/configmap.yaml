@@ -36,3 +36,5 @@ data:
   BREVO_ADVANCED_PROGRAM_TEMPLATE_ID: "{{ .Values.brevo.templates.advancedProgram }}"
   BREVO_TAILORED_COACHING_TEMPLATE_ID: "{{ .Values.brevo.templates.tailoredCoaching }}"
   BREVO_ORDER_CONFIRMATION_TEMPLATE_ID: "{{ .Values.brevo.templates.orderConfirmation }}"
+  ADMIN_EMAIL: "{{ .Values.admin.email }}"
+  SEED_USER_EMAIL: "{{ .Values.seedUser.email }}"

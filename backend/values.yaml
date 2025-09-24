@@ -54,6 +54,10 @@ brevo:
     advancedProgram: 7
     tailoredCoaching: 9
     orderConfirmation: 10
+admin:
+  email: info@lmwfitness.co.uk
+seedUser:
+  email: warren_laura@yahoo.co.uk
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 60

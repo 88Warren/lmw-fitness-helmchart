@@ -125,6 +125,16 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: ULTIMATE_MINDSET_PACKAGE_PRICE_ID
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: ADMIN_PASSWORD
+        - name: SEED_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: SEED_USER_PASSWORD
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.endpoint }}
