@@ -43,6 +43,17 @@ brevo:
     listID: 15
     DOItemplateID: 2
     DOIRedirectURL: https://www.lmwfitness.co.uk/newsletter/confirm
+  lists:
+    mindset: 17
+    beginner: 10
+    advanced: 12
+    tailoredCoaching: 14
+  templates:
+    mindsetPackage: 8
+    beginnerProgram: 6
+    advancedProgram: 7
+    tailoredCoaching: 9
+    orderConfirmation: 10
 livenessProbe:
   endpoint: /api/health/live
   initialDelaySeconds: 60
