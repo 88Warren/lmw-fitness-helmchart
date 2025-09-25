@@ -184,5 +184,6 @@ data:
     host    all             all             10.42.0.0/16            md5
     host    all             all             10.0.0.0/8              md5
     # Allow connections from any IP (less secure, use only if needed)
-    # host    all             all             0.0.0.0/0               md5
+    host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.42.0.0/16            md5
+
 ---
