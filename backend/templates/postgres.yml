@@ -49,9 +49,17 @@ spec:
               key: DB_PASSWORD
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: "md5"
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres-storage
+        - mountPath: /etc/postgresql/postgresql.conf
+          name: postgres-config
+          subPath: postgresql.conf
+        - mountPath: /etc/postgresql/pg_hba.conf
+          name: postgres-config
+          subPath: pg_hba.conf
         livenessProbe:
           exec:
             command:
@@ -76,6 +84,9 @@ spec:
       - name: postgres-storage
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-postgres-pvc-v2
+      - name: postgres-config
+        configMap:
+          name: {{ .Release.Name }}-postgres-config
 ---
 apiVersion: v1
 kind: Service
@@ -133,4 +144,41 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: "/data/postgres"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-postgres-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-namespace: {{ .Values.namespace }}
+data:
+  postgresql.conf: |
+    listen_addresses = '*'
+    port = 5432
+    max_connections = 100
+    shared_buffers = 128MB
+    dynamic_shared_memory_type = posix
+    log_timezone = 'UTC'
+    datestyle = 'iso, mdy'
+    timezone = 'UTC'
+    lc_messages = 'en_US.utf8'
+    lc_monetary = 'en_US.utf8'
+    lc_numeric = 'en_US.utf8'
+    lc_time = 'en_US.utf8'
+    default_text_search_config = 'pg_catalog.english'
+    hba_file = '/etc/postgresql/pg_hba.conf'
+  pg_hba.conf: |
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    local   all             all                                     trust
+    host    all             all             127.0.0.1/32            md5
+    host    all             all             ::1/128                 md5
+    # Allow connections from Kubernetes cluster network
+    host    all             all             10.42.0.0/16            md5
+    host    all             all             10.0.0.0/8              md5
+    # Allow connections from any IP (less secure, use only if needed)
+    # host    all             all             0.0.0.0/0               md5
 ---
