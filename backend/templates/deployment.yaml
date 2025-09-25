@@ -29,7 +29,24 @@ spec:
         command: 
         - "sh"
         - "-c"
-        - "until nc -z {{ .Release.Name }}-postgres-service.{{ .Values.namespace }}.svc.cluster.local 5432; do echo waiting for postgres; sleep 20; done;"
+        - |
+          # The database may be ready to accept connections before the pg_isready tool is installed.
+          # The loop will wait until the database is ready for connections before it exits.
+          until pg_isready -h {{ .Release.Name }}-postgres-service.{{ .Values.namespace }}.svc.cluster.local -U $(DB_USER) -d $(DB_NAME) -p 5432; do
+            echo "Waiting for postgresql to be ready..."
+            sleep 5
+          done
+        env:
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configmap
+              key: DB_USER
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configmap
+              key: DB_NAME
         resources:
           requests:
             memory: "16Mi"
