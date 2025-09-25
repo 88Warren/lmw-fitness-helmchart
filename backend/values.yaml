@@ -23,7 +23,7 @@ api:
 images:
   directory: images
 database:
-  name: LMWfitness
+  name: lmwfitness
   user: postgres
   port: 5432
   type: ClusterIP
