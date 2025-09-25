@@ -22,6 +22,9 @@ spec:
       containers:
       - name: postgres
         image: postgres:15
+        args:
+        - -c
+        - config_file=/var/lib/postgresql/data/pgdata/postgresql.conf
         ports:
         - containerPort: {{ .Values.database.port }}
         resources:
@@ -54,10 +57,11 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres-storage
-        - mountPath: /etc/postgresql/postgresql.conf
+        # Mount configuration directly into PGDATA so Postgres actually loads it
+        - mountPath: /var/lib/postgresql/data/pgdata/postgresql.conf
           name: postgres-config
           subPath: postgresql.conf
-        - mountPath: /etc/postgresql/pg_hba.conf
+        - mountPath: /var/lib/postgresql/data/pgdata/pg_hba.conf
           name: postgres-config
           subPath: pg_hba.conf
         livenessProbe:

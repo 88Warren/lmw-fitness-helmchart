@@ -11,7 +11,7 @@ data:
   PORT: "{{ .Values.api.port }}"
   DB_HOST: "{{ .Release.Name }}-postgres-service"
   DB_USER: "{{ .Values.database.user }}"
-  DB_NAME: "{{ .Values.database.name }}"
+  DB_NAME: "{{ .Values.database.name | lower }}"
   DB_PORT: "{{ .Values.database.port }}"
   DB_SSLMODE: "{{ .Values.database.sslMode }}"
   STORAGE_CLASS: "{{ .Values.storage.storageClass }}"

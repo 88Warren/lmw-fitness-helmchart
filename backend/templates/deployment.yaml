@@ -27,14 +27,12 @@ spec:
     spec:
       initContainers:
       - name: wait-for-postgres
-        image: busybox
+        image: postgres:15
         command: 
         - "sh"
         - "-c"
         - |
-          # The database may be ready to accept connections before the pg_isready tool is installed.
-          # The loop will wait until the database is ready for connections before it exits.
-          until pg_isready -h {{ .Release.Name }}-postgres-service.{{ .Values.namespace }}.svc.cluster.local -U $(DB_USER) -d $(DB_NAME) -p 5432; do
+          until pg_isready -h {{ .Release.Name }}-postgres-service.{{ .Values.namespace }}.svc.cluster.local -U "$DB_USER" -d "$DB_NAME" -p 5432; do
             echo "Waiting for postgresql to be ready..."
             sleep 5
           done
