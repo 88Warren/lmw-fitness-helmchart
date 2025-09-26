@@ -1,6 +1,6 @@
 namespace: lmw-fitness
 env: production
-allowedOrigin: https://www.lmwfitness.co.uk
+allowedOrigin: https://www.lmwfitness.co.uk,https://lmwfitness.co.uk
 replicaCount: 1
 image:
   pullPolicy: Always
