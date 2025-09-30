@@ -54,6 +54,8 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         - name: POSTGRES_HOST_AUTH_METHOD
           value: "md5"
+        - name: POSTGRES_INITDB_ARGS
+          value: "--auth-host=md5 --auth-local=trust"
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres-storage
@@ -63,14 +65,15 @@ spec:
         - mountPath: /etc/postgresql/pg_hba.conf
           name: postgres-config
           subPath: pg_hba.conf
+        - mountPath: /docker-entrypoint-initdb.d/init-db.sql
+          name: postgres-config
+          subPath: init-db.sql
         livenessProbe:
           exec:
             command:
-            - pg_isready
-            - -U
-            - $(POSTGRES_USER)
-            - -d
-            - $(POSTGRES_DB)
+            - sh
+            - -c
+            - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h localhost -p 5432'
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -78,11 +81,9 @@ spec:
         readinessProbe:
           exec:
             command:
-            - pg_isready
-            - -U
-            - $(POSTGRES_USER) 
-            - -d
-            - $(POSTGRES_DB)  
+            - sh
+            - -c
+            - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h localhost -p 5432'
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -179,6 +180,20 @@ data:
     lc_time = 'en_US.utf8'
     default_text_search_config = 'pg_catalog.english'
     hba_file = '/etc/postgresql/pg_hba.conf'
+    # Logging configuration
+    log_destination = 'stderr'
+    logging_collector = off
+    log_statement = 'none'
+    log_min_error_statement = error
+    log_min_messages = warning
+    log_connections = off
+    log_disconnections = off
+    # Performance settings
+    effective_cache_size = 256MB
+    maintenance_work_mem = 64MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
   pg_hba.conf: |
     # TYPE  DATABASE        USER            ADDRESS                 METHOD
     local   all             all                                     trust
@@ -186,8 +201,29 @@ data:
     host    all             all             ::1/128                 md5
     # Allow connections from Kubernetes cluster network
     host    all             all             10.42.0.0/16            md5
+    host    all             all             10.43.0.0/16            md5
     host    all             all             10.0.0.0/8              md5
-    # Allow connections from any IP (less secure, use only if needed)
+    # Specific database and user access
     host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.42.0.0/16            md5
+    host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.43.0.0/16            md5
+  init-db.sql: |
+    -- Ensure the database exists
+    SELECT 'CREATE DATABASE {{ .Values.database.name | lower }}'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{{ .Values.database.name | lower }}');
+    
+    -- Grant all privileges to the postgres user on the database
+    GRANT ALL PRIVILEGES ON DATABASE {{ .Values.database.name | lower }} TO {{ .Values.database.user }};
+    
+    -- Connect to the database and set up proper permissions
+    \c {{ .Values.database.name | lower }};
+    
+    -- Grant schema permissions
+    GRANT ALL ON SCHEMA public TO {{ .Values.database.user }};
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ .Values.database.user }};
+    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.database.user }};
+    
+    -- Set default privileges for future objects
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {{ .Values.database.user }};
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO {{ .Values.database.user }};
 
 ---
