@@ -57,7 +57,6 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres-storage
-        # Mount configuration under /etc/postgresql and point config_file to it
         - mountPath: /etc/postgresql/postgresql.conf
           name: postgres-config
           subPath: postgresql.conf
@@ -91,7 +90,7 @@ spec:
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-postgres-pvc-v2
+          claimName: {{ .Release.Name }}-postgres-pvc
       - name: postgres-config
         configMap:
           name: {{ .Release.Name }}-postgres-config
@@ -118,7 +117,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-postgres-pvc-v2
+  name: {{ .Release.Name }}-postgres-pvc
   namespace: {{ .Values.namespace }}
   labels:
     app: {{ .Release.Name }}-postgres-service
@@ -132,27 +131,27 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi 
+      storage: 3Gi 
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ .Release.Name }}-postgres-pv-v2
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.storage.storageClass }}
-  capacity:
-    storage: 1Gi  
-  accessModes:
-    - ReadWriteOnce  
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: "/data/postgres"
----
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: {{ .Release.Name }}-postgres-pv-v2
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+#     meta.helm.sh/release-namespace: {{ .Values.namespace }}
+# spec:
+#   storageClassName: {{ .Values.storage.storageClass }}
+#   capacity:
+#     storage: 1Gi  
+#   accessModes:
+#     - ReadWriteOnce  
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: "/data/postgres"
+# ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
