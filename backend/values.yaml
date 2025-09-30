@@ -24,11 +24,12 @@ images:
   directory: images
 database:
   name: lmwfitness
-  user: postgres
+  user: lmwcode
   port: 5432
   type: ClusterIP
   protocol: TCP
   sslMode: disable
+  host: 217.154.57.170
 webserver:
   host: www.lmwfitness.co.uk
 smtp:

@@ -1,229 +1,229 @@
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Release.Name }}-postgres-deployment
-  namespace: {{ .Values.namespace }}
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: {{ .Release.Name }}-postgres
-  template:
-    metadata:
-      labels:
-        app: {{ .Release.Name }}-postgres
-    spec:
-      containers:
-      - name: postgres
-        image: postgres:15
-        args:
-        - -c
-        - config_file=/etc/postgresql/postgresql.conf
-        ports:
-        - containerPort: {{ .Values.database.port }}
-        resources:
-          requests:
-            memory: "192Mi"
-            cpu: "200m"
-          limits:
-            memory: "256Mi"
-            cpu: "250m"
-        env:
-        - name: POSTGRES_USER
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Release.Name }}-configmap
-              key: DB_USER
-        - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Release.Name }}-configmap
-              key: DB_NAME
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-secrets
-              key: DB_PASSWORD
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        - name: POSTGRES_HOST_AUTH_METHOD
-          value: "md5"
-        - name: POSTGRES_INITDB_ARGS
-          value: "--auth-host=md5 --auth-local=trust"
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: postgres-storage
-        - mountPath: /etc/postgresql/postgresql.conf
-          name: postgres-config
-          subPath: postgresql.conf
-        - mountPath: /etc/postgresql/pg_hba.conf
-          name: postgres-config
-          subPath: pg_hba.conf
-        - mountPath: /docker-entrypoint-initdb.d/init-db.sql
-          name: postgres-config
-          subPath: init-db.sql
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h localhost -p 5432'
-          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-        readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h localhost -p 5432'
-          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-      volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: lmwfitness-postgres-pvc
-      - name: postgres-config
-        configMap:
-          name: {{ .Release.Name }}-postgres-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Release.Name }}-postgres-service
-  namespace: {{ .Values.namespace }}
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-spec:
-  selector:
-    app: {{ .Release.Name }}-postgres
-  ports:
-  - port: {{ .Values.database.port }}
-    targetPort: {{ .Values.database.port }}
-    protocol: {{ .Values.database.protocol }}
-  type: {{ .Values.database.type }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lmwfitness-postgres-pvc
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: {{ .Release.Name }}-postgres-service
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.storage.storageClass }}
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 3Gi 
-  volumeName: lmwfitness-postgres-pv
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: lmwfitness-postgres-pv
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.storage.storageClass }}
-  capacity:
-    storage: 3Gi  
-  accessModes:
-    - ReadWriteOnce  
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: "/data/postgres"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-postgres-config
-  namespace: {{ .Values.namespace }}
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
-    meta.helm.sh/release-namespace: {{ .Values.namespace }}
-data:
-  postgresql.conf: |
-    listen_addresses = '*'
-    port = 5432
-    max_connections = 100
-    shared_buffers = 128MB
-    dynamic_shared_memory_type = posix
-    log_timezone = 'UTC'
-    datestyle = 'iso, mdy'
-    timezone = 'UTC'
-    lc_messages = 'en_US.utf8'
-    lc_monetary = 'en_US.utf8'
-    lc_numeric = 'en_US.utf8'
-    lc_time = 'en_US.utf8'
-    default_text_search_config = 'pg_catalog.english'
-    hba_file = '/etc/postgresql/pg_hba.conf'
-    # Logging configuration
-    log_destination = 'stderr'
-    logging_collector = off
-    log_statement = 'none'
-    log_min_error_statement = error
-    log_min_messages = warning
-    log_connections = off
-    log_disconnections = off
-    # Performance settings
-    effective_cache_size = 256MB
-    maintenance_work_mem = 64MB
-    checkpoint_completion_target = 0.9
-    wal_buffers = 16MB
-    default_statistics_target = 100
-  pg_hba.conf: |
-    # TYPE  DATABASE        USER            ADDRESS                 METHOD
-    local   all             all                                     trust
-    host    all             all             127.0.0.1/32            md5
-    host    all             all             ::1/128                 md5
-    # Allow connections from Kubernetes cluster network
-    host    all             all             10.42.0.0/16            md5
-    host    all             all             10.43.0.0/16            md5
-    host    all             all             10.0.0.0/8              md5
-    # Specific database and user access
-    host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.42.0.0/16            md5
-    host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.43.0.0/16            md5
-  init-db.sql: |
-    -- Ensure the database exists
-    SELECT 'CREATE DATABASE {{ .Values.database.name | lower }}'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{{ .Values.database.name | lower }}');
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: {{ .Release.Name }}-postgres-deployment
+#   namespace: {{ .Values.namespace }}
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+#     meta.helm.sh/release-namespace: {{ .Values.namespace }}
+# spec:
+#   replicas: {{ .Values.replicaCount }}
+#   selector:
+#     matchLabels:
+#       app: {{ .Release.Name }}-postgres
+#   template:
+#     metadata:
+#       labels:
+#         app: {{ .Release.Name }}-postgres
+#     spec:
+#       containers:
+#       - name: postgres
+#         image: postgres:15
+#         args:
+#         - -c
+#         - config_file=/etc/postgresql/postgresql.conf
+#         ports:
+#         - containerPort: {{ .Values.database.port }}
+#         resources:
+#           requests:
+#             memory: "192Mi"
+#             cpu: "200m"
+#           limits:
+#             memory: "256Mi"
+#             cpu: "250m"
+#         env:
+#         - name: POSTGRES_USER
+#           valueFrom:
+#             configMapKeyRef:
+#               name: {{ .Release.Name }}-configmap
+#               key: DB_USER
+#         - name: POSTGRES_DB
+#           valueFrom:
+#             configMapKeyRef:
+#               name: {{ .Release.Name }}-configmap
+#               key: DB_NAME
+#         - name: POSTGRES_PASSWORD
+#           valueFrom:
+#             secretKeyRef:
+#               name: {{ .Release.Name }}-secrets
+#               key: DB_PASSWORD
+#         - name: PGDATA
+#           value: /var/lib/postgresql/data/pgdata
+#         - name: POSTGRES_HOST_AUTH_METHOD
+#           value: "md5"
+#         - name: POSTGRES_INITDB_ARGS
+#           value: "--auth-host=md5 --auth-local=trust"
+#         volumeMounts:
+#         - mountPath: /var/lib/postgresql/data
+#           name: postgres-storage
+#         - mountPath: /etc/postgresql/postgresql.conf
+#           name: postgres-config
+#           subPath: postgresql.conf
+#         - mountPath: /etc/postgresql/pg_hba.conf
+#           name: postgres-config
+#           subPath: pg_hba.conf
+#         - mountPath: /docker-entrypoint-initdb.d/init-db.sql
+#           name: postgres-config
+#           subPath: init-db.sql
+#         livenessProbe:
+#           exec:
+#             command:
+#             - sh
+#             - -c
+#             - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h localhost -p 5432'
+#           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+#           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+#           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+#           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+#         readinessProbe:
+#           exec:
+#             command:
+#             - sh
+#             - -c
+#             - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h localhost -p 5432'
+#           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+#           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+#           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+#           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+#       volumes:
+#       - name: postgres-storage
+#         persistentVolumeClaim:
+#           claimName: lmwfitness-postgres-pvc
+#       - name: postgres-config
+#         configMap:
+#           name: {{ .Release.Name }}-postgres-config
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: {{ .Release.Name }}-postgres-service
+#   namespace: {{ .Values.namespace }}
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+#     meta.helm.sh/release-namespace: {{ .Values.namespace }}
+# spec:
+#   selector:
+#     app: {{ .Release.Name }}-postgres
+#   ports:
+#   - port: {{ .Values.database.port }}
+#     targetPort: {{ .Values.database.port }}
+#     protocol: {{ .Values.database.protocol }}
+#   type: {{ .Values.database.type }}
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: lmwfitness-postgres-pvc
+#   namespace: {{ .Values.namespace }}
+#   labels:
+#     app: {{ .Release.Name }}-postgres-service
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+#     meta.helm.sh/release-namespace: {{ .Values.namespace }}
+# spec:
+#   storageClassName: {{ .Values.storage.storageClass }}
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 3Gi 
+#   volumeName: lmwfitness-postgres-pv
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: lmwfitness-postgres-pv
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+#     meta.helm.sh/release-namespace: {{ .Values.namespace }}
+# spec:
+#   storageClassName: {{ .Values.storage.storageClass }}
+#   capacity:
+#     storage: 3Gi  
+#   accessModes:
+#     - ReadWriteOnce  
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: "/data/postgres"
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: {{ .Release.Name }}-postgres-config
+#   namespace: {{ .Values.namespace }}
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+#     meta.helm.sh/release-namespace: {{ .Values.namespace }}
+# data:
+#   postgresql.conf: |
+#     listen_addresses = '*'
+#     port = 5432
+#     max_connections = 100
+#     shared_buffers = 128MB
+#     dynamic_shared_memory_type = posix
+#     log_timezone = 'UTC'
+#     datestyle = 'iso, mdy'
+#     timezone = 'UTC'
+#     lc_messages = 'en_US.utf8'
+#     lc_monetary = 'en_US.utf8'
+#     lc_numeric = 'en_US.utf8'
+#     lc_time = 'en_US.utf8'
+#     default_text_search_config = 'pg_catalog.english'
+#     hba_file = '/etc/postgresql/pg_hba.conf'
+#     # Logging configuration
+#     log_destination = 'stderr'
+#     logging_collector = off
+#     log_statement = 'none'
+#     log_min_error_statement = error
+#     log_min_messages = warning
+#     log_connections = off
+#     log_disconnections = off
+#     # Performance settings
+#     effective_cache_size = 256MB
+#     maintenance_work_mem = 64MB
+#     checkpoint_completion_target = 0.9
+#     wal_buffers = 16MB
+#     default_statistics_target = 100
+#   pg_hba.conf: |
+#     # TYPE  DATABASE        USER            ADDRESS                 METHOD
+#     local   all             all                                     trust
+#     host    all             all             127.0.0.1/32            md5
+#     host    all             all             ::1/128                 md5
+#     # Allow connections from Kubernetes cluster network
+#     host    all             all             10.42.0.0/16            md5
+#     host    all             all             10.43.0.0/16            md5
+#     host    all             all             10.0.0.0/8              md5
+#     # Specific database and user access
+#     host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.42.0.0/16            md5
+#     host    {{ .Values.database.name }}   {{ .Values.database.user }}    10.43.0.0/16            md5
+#   init-db.sql: |
+#     -- Ensure the database exists
+#     SELECT 'CREATE DATABASE {{ .Values.database.name | lower }}'
+#     WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{{ .Values.database.name | lower }}');
     
-    -- Grant all privileges to the postgres user on the database
-    GRANT ALL PRIVILEGES ON DATABASE {{ .Values.database.name | lower }} TO {{ .Values.database.user }};
+#     -- Grant all privileges to the postgres user on the database
+#     GRANT ALL PRIVILEGES ON DATABASE {{ .Values.database.name | lower }} TO {{ .Values.database.user }};
     
-    -- Connect to the database and set up proper permissions
-    \c {{ .Values.database.name | lower }};
+#     -- Connect to the database and set up proper permissions
+#     \c {{ .Values.database.name | lower }};
     
-    -- Grant schema permissions
-    GRANT ALL ON SCHEMA public TO {{ .Values.database.user }};
-    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ .Values.database.user }};
-    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.database.user }};
+#     -- Grant schema permissions
+#     GRANT ALL ON SCHEMA public TO {{ .Values.database.user }};
+#     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ .Values.database.user }};
+#     GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.database.user }};
     
-    -- Set default privileges for future objects
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {{ .Values.database.user }};
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO {{ .Values.database.user }};
+#     -- Set default privileges for future objects
+#     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {{ .Values.database.user }};
+#     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO {{ .Values.database.user }};
 
----
+# ---
